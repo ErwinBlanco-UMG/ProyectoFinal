@@ -1,0 +1,26 @@
+place_id,user_id,rating,comment
+T001,U001,5.0,Impresionante! La historia maya cobra vida aquí.
+T001,U002,4.5,"Un lugar increíble, pero hace mucho calor."
+T001,U021,5.0,Visita obligatoria para amantes de la historia y naturaleza.
+T002,U003,5.0,"Antigua es mágica, me encantó pasear por sus calles."
+T002,U004,4.8,"Hermosa ciudad colonial, muchos lugares para explorar."
+T002,U022,4.9,Cada esquina de Antigua es una foto.
+T003,U005,4.9,"El lago es espectacular, las vistas a los volcanes son inmejorables."
+T003,U006,4.7,"Paz total en Atitlán, cada pueblo tiene su encanto."
+T003,U023,4.8,Imperdible el amanecer en el lago Atitlán.
+T004,U007,4.0,"Subir el Pacaya fue duro, pero la lava valió la pena!"
+T004,U008,4.2,"Una experiencia única, ver el volcán activo es increíble."
+T004,U024,4.1,"Llegué cansado, pero la vista del volcán fue mi recompensa."
+T005,U009,5.0,"Semuc Champey es un paraíso, el agua turquesa es fascinante."
+T005,U010,4.8,"Dura la llegada, pero una vez allí es de ensueño."
+T005,U025,4.9,Las pozas de Semuc Champey son un regalo de la naturaleza.
+T006,U011,4.3,Bonita catedral en el corazón de la ciudad.
+T007,U012,4.5,"El zoológico está muy bien cuidado, ideal para niños."
+T008,U013,4.4,"Paseo Cayalá tiene de todo, muy moderno y seguro."
+T009,U014,3.9,"Un mercado con mucha vida, encuentras de todo un poco."
+T010,U015,4.6,"El Palacio Nacional es un edificio impresionante, mucha historia."
+T011,U016,4.4,Interesante colección en el museo Popol Vuh.
+T012,U017,5.0,El Arco de Santa Catalina es el ícono de Antigua.
+T013,U018,4.7,La vista desde el Cerro de La Cruz es la mejor de Antigua.
+T014,U019,4.5,Hermosa iglesia con detalles arquitectónicos increíbles.
+T015,U020,4.6,El mercado de Chichicastenango es una explosión de color y cultura.

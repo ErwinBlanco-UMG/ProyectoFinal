@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Recomendación de Turismo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
+        .container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .card { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1, h2, h3 { color: #28a745; } /* Verde principal */
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"], input[type="number"], select, textarea {
+            width: calc(100% - 22px); padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px;
+        }
+        button {
+            background-color: #28a745; color: white; padding: 10px 15px; border: none; border-radius: 4px;
+            cursor: pointer; font-size: 16px; margin-top: 10px;
+        }
+        button:hover { background-color: #218838; }
+        .results-box {
+            background-color: #e9ecef; padding: 15px; border-radius: 4px; margin-top: 15px;
+            border: 1px solid #ced4da;
+        }
+        .recommendation-item {
+            border-bottom: 1px dashed #ccc; padding-bottom: 10px; margin-bottom: 10px;
+        }
+        .recommendation-item:last-child {
+            border-bottom: none;
+        }
+        .error-message {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        #map {
+            height: 400px; /* Altura del mapa */
+            width: 100%; /* Ancho del mapa */
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <center><h1>Sistema de Recomendación de Turismo</h1></center>
+
+    <div class="container">
+        <div class="card">
+            <h3>Carga Masiva de Datos</h3>
+            <form action="/upload_data" method="POST" enctype="multipart/form-data">
+                <label for="hospedajes_file">CSV de Hospedajes:</label>
+                <input type="file" name="hospedajes_file" id="hospedajes_file" accept=".csv"><br><br>
+                <label for="turisticos_file">CSV de Lugares Turísticos:</label>
+                <input type="file" name="turisticos_file" id="turisticos_file" accept=".csv"><br><br>
+                <label for="ratings_file">CSV de Calificaciones (Opcional):</label>
+                <input type="file" name="ratings_file" id="ratings_file" accept=".csv"><br><br>
+                <button type="submit">Cargar Datos</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>Agregar Nuevo Lugar</h3>
+            <form action="/add_place" method="POST">
+                <label for="place_type">Tipo de Entidad:</label>
+                <select id="place_type" name="place_type" onchange="togglePlaceFields()">
+                    <option value="Hospedaje">Hospedaje</option>
+                    <option value="Turistico">Lugar Turístico</option>
+                </select><br><br>
+                <label for="id">Identificación:</label>
+                <input type="text" id="id" name="id" required><br><br>
+                <label for="name">Nombre:</label>
+                <input type="text" id="name" name="name" required><br><br>
+                <label for="latitude">Latitud:</label>
+                <input type="number" step="any" id="latitude" name="latitude" required><br><br>
+                <label for="longitude">Longitud:</label>
+                <input type="number" step="any" id="longitude" name="longitude" required><br><br>
+                <label for="price">Precio:</label>
+                <input type="number" step="any" id="price" name="price" required><br><br>
+                <label for="average_rating">Calificación Promedio:</label>
+                <input type="number" step="any" id="average_rating" name="average_rating" min="0" max="5" required><br><br>
+                <div id="turistico_fields" style="display: none;">
+                    <label for="estimated_stay_hours">Horas de Estancia Estimada:</label>
+                    <input type="number" step="any" id="estimated_stay_hours" name="estimated_stay_hours"><br><br>
+                </div>
+                <button type="submit">Agregar Lugar</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>Calificar Lugar Existente</h3>
+            <form action="/rate_place" method="POST">
+                <label for="place_id_rating">ID del Lugar a Calificar:</label>
+                <select id="place_id_rating" name="place_id" required>
+                    <option value="">Selecciona un Lugar</option>
+                    {% for place in turistic_places %}
+                        <option value="{{ place.id }}">{{ place.id }} - {{ place.name }}</option>
+                    {% endfor %}
+                </select><br><br>
+                <label for="user_rating">Tu Calificación (1-5):</label>
+                <input type="number" id="user_rating" name="user_rating" min="1" max="5" required><br><br>
+                <label for="comment">Comentarios (Opcional):</label>
+                <textarea id="comment" name="comment" rows="3"></textarea><br><br>
+                <button type="submit">Enviar Calificación</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>Generar Recomendaciones</h3>
+            <form id="recommendationForm">
+                <label for="origin_lat">Latitud de Origen (Ej: 14.6349):</label>
+                <input type="number" step="any" id="origin_lat" name="origin_lat" value="14.6349" required><br><br>
+                <label for="origin_lon">Longitud de Origen (Ej: -90.5069):</label>
+                <input type="number" step="any" id="origin_lon" name="origin_lon" value="-90.5069" required><br><br>
+                <label for="daily_budget">Presupuesto Diario (Q):</label>
+                <input type="number" step="any" id="daily_budget" name="daily_budget" required><br><br>
+                <button type="submit">Obtener Recomendaciones</button>
+            </form>
+            <div id="recommendationResults" class="results-box">
+                Nuestras Mejores Recomendaciones:
+                <p>Ingresa tu destino y presupuesto para obtener recomendaciones.</p>
+                <div id="recommendationList">
+                    </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Visualización del Mapa</h3>
+            <div id="map"></div>
+        </div>
+
+        <div class="card">
+            <h3>Exportar Datos y Estructuras</h3>
+            <p><a href="/export_entities">Exportar Entidades a CSV</a></p>
+            <p><a href="/export_structure">Exportar Estructura del Arbol B (PNG)</a></p>
+        </div>
+    </div>
+
+    <script>
+        function togglePlaceFields() {
+            var placeType = document.getElementById("place_type").value;
+            var turisticoFields = document.getElementById("turistico_fields");
+            if (placeType === "Turistico") {
+                turisticoFields.style.display = "block";
+            } else {
+                turisticoFields.style.display = "none";
+            }
+        }
+
+        let map; // Declara una variable global para el mapa
+        let markers = []; // Para almacenar marcadores de recomendaciones y poder borrarlos
+        let originMarker = null; // Marcador para el origen, inicialmente nulo
+
+        // Esta función será llamada por la API de Google Maps cuando se cargue
+        function initMap() {
+            const defaultOrigin = { lat: 14.6349, lng: -90.5069 }; // Coordenadas predeterminadas (Guatemala)
+
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 12,
+                center: defaultOrigin,
+            });
+
+            // Crea el marcador de origen inicial
+            originMarker = new google.maps.Marker({
+                position: defaultOrigin,
+                map: map,
+                title: "Origen Predeterminado",
+                icon: {
+                    url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png" // Icono azul para el origen
+                }
+            });
+
+            console.log("Mapa de Google Maps inicializado.");
+        }
+
+        // Función para agregar marcadores de recomendaciones al mapa
+        function addMarkersToMap(recommendations) {
+            // Limpiar solo los marcadores de recomendaciones anteriores
+            for (let i = 0; i < markers.length; i++) {
+                markers[i].setMap(null);
+            }
+            markers = []; // Reiniciar la lista de marcadores de recomendaciones
+
+            recommendations.forEach(rec => {
+                const position = { lat: parseFloat(rec.latitude), lng: parseFloat(rec.longitude) };
+                const marker = new google.maps.Marker({
+                    position: position,
+                    map: map,
+                    title: rec.name,
+                    icon: {
+                        url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png" // Icono verde para las recomendaciones
+                    }
+                });
+
+                markers.push(marker); // Añadir el nuevo marcador a la lista
+
+                // Opcional: Añadir un InfoWindow al marcador
+                const infowindow = new google.maps.InfoWindow({
+                    content: `
+                        <strong>${rec.name}</strong><br>
+                        Calificación: ${rec.average_rating} / 5<br>
+                        Precio: Q${rec.price.toFixed(2)}<br>
+                        Estancia Estimada: ${rec.estimated_stay_hours} horas<br>
+                        Tiempo de Viaje: ${rec.travel_duration}<br>
+                        Distancia: ${rec.travel_distance}<br>
+                        Costo Total: Q${rec.total_cost_for_visit.toFixed(2)}
+                    `
+                });
+                marker.addListener("click", () => {
+                    infowindow.open(map, marker);
+                });
+            });
+
+            // Ajustar el mapa para que muestre el marcador de origen y todos los marcadores de recomendaciones
+            const bounds = new google.maps.LatLngBounds();
+            if (originMarker) {
+                bounds.extend(originMarker.getPosition());
+            }
+            markers.forEach(marker => bounds.extend(marker.getPosition()));
+
+            if (!bounds.isEmpty()) { // Asegúrate de que los límites no estén vacíos
+                map.fitBounds(bounds);
+            }
+        }
+
+
+        // Script para manejar el formulario de recomendaciones
+        document.getElementById('recommendationForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Previene el envío por defecto del formulario
+
+            const originLat = document.getElementById('origin_lat').value;
+            const originLon = document.getElementById('origin_lon').value;
+            const dailyBudget = document.getElementById('daily_budget').value;
+            const recommendationList = document.getElementById('recommendationList');
+
+            // Limpiar resultados anteriores
+            recommendationList.innerHTML = '';
+            recommendationList.textContent = 'Cargando recomendaciones...';
+
+            // Actualizar la posición del marcador de origen en el mapa
+            if (originMarker) {
+                originMarker.setPosition({ lat: parseFloat(originLat), lng: parseFloat(originLon) });
+                map.setCenter({ lat: parseFloat(originLat), lng: parseFloat(originLon) }); // Centrar mapa en el nuevo origen
+            }
+
+
+            fetch('/get_recommendations', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    origin_lat: originLat,
+                    origin_lon: originLon,
+                    daily_budget: dailyBudget
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                recommendationList.innerHTML = ''; // Limpiar después de cargar
+                if (data.error) {
+                    recommendationList.innerHTML = `<p class="error-message">Error: ${data.error}</p>`;
+                    addMarkersToMap([]); // Limpiar marcadores si hay un error
+                } else if (data.message) {
+                    recommendationList.innerHTML = `<p>${data.message}</p>`;
+                    addMarkersToMap([]); // Limpiar marcadores si no hay lugares turísticos disponibles
+                }
+                else if (data.length > 0) {
+                    data.forEach(rec => {
+                        const div = document.createElement('div');
+                        div.className = 'recommendation-item';
+                        div.innerHTML = `
+                            <strong>${rec.name}</strong> (ID: ${rec.id})<br>
+                            Calificación: ${rec.average_rating} / 5<br>
+                            Precio de Entrada: Q${rec.price.toFixed(2)}<br>
+                            Estancia Estimada: ${rec.estimated_stay_hours} horas<br>
+                            Tiempo de Viaje desde Origen: ${rec.travel_duration}<br>
+                            Distancia desde Origen: ${rec.travel_distance}<br>
+                            Costo Estimado de Viaje: Q${rec.estimated_travel_cost.toFixed(2)}<br>
+                            Costo Total Estimado (Entrada + Viaje): Q${rec.total_cost_for_visit.toFixed(2)}
+                        `;
+                        recommendationList.appendChild(div);
+                    });
+                    addMarkersToMap(data); // Llama a esta función para agregar marcadores al mapa
+                } else {
+                    recommendationList.innerHTML = '<p>No se encontraron recomendaciones con los criterios especificados.</p>';
+                    addMarkersToMap([]); // Limpiar marcadores si no hay recomendaciones
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching recommendations:', error);
+                recommendationList.innerHTML = `<p class="error-message">Error al obtener recomendaciones: ${error.message}</p>`;
+                addMarkersToMap([]); // Limpiar marcadores en caso de error de red
+            });
+        });
+
+        // Inicializar la visibilidad de los campos al cargar la página
+        document.addEventListener('DOMContentLoaded', togglePlaceFields);
+
+        // La función initMap será llamada automáticamente por el script de la API de Google Maps
+        // cuando se cargue, debido al callback=initMap en la URL del script.
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ Maps_api_key }}&callback=initMap"></script>
+</body>
+</html>

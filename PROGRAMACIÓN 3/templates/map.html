@@ -1,0 +1,17 @@
+<div id="map" style="height: 500px; width: 100%;"></div>
+
+<script>
+    // Initialize map (Google Maps or Leaflet.js)
+    function initMap() {
+        // Google Maps example
+        const guatemala = { lat: 15.7835, lng: -90.2308 }; // Central Guatemala
+        const map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 7,
+            center: guatemala,
+        });
+
+        // Add markers for places from your data (fetched via API or preloaded)
+        // Draw routes for recommendations
+    }
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>

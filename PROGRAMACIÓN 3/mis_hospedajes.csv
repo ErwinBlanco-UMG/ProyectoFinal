@@ -1,0 +1,26 @@
+id,name,latitude,longitude,price,average_rating
+H001,Hotel Real InterContinental Guatemala,14.6062,-90.5284,150.00,4.6
+H002,The Westin Camino Real,14.6015,-90.5255,180.00,4.7
+H003,Barceló Guatemala City,14.6000,-90.5350,120.00,4.5
+H004,Hyatt Centric Guatemala City,14.6065,-90.5050,165.00,4.7
+H005,Hotel Tikal Futura,14.6170,-90.5650,100.00,4.4
+H006,Hostal Tequila Sunrise,14.6300,-90.5150,25.00,4.5
+H007,Central Hostel Reforma,14.6030,-90.5120,20.00,4.2
+H008,Hotel Casa Santo Domingo (Antigua),14.5601,-90.7302,250.00,4.8
+H009,Hotel Porta Antigua (Antigua),14.5560,-90.7340,190.00,4.6
+H010,Hotel Palacio de Doña Beatriz (Antigua),14.5565,-90.7305,170.00,4.7
+H011,Hotel Atitlán (Lago Atitlán),14.7300,-91.2000,140.00,4.5
+H012,Hotel Panajachel (Lago Atitlán),14.7420,-91.1600,80.00,4.0
+H013,Hotel Sac Chich (Cobán),15.4850,-90.3700,75.00,4.3
+H014,Ramada by Wyndham Guatemala City,14.6090,-90.5080,95.00,4.1
+H015,Comfort Inn Guatemala City,14.6085,-90.5020,70.00,3.9
+H016,Hostal Los Cuatros (Flores),16.9290,-89.8920,30.00,4.1
+H017,Hotel La Posada de Don Rodrigo (Antigua),14.5580,-90.7330,160.00,4.6
+H018,Hotel Soleil Antigua (Antigua),14.5540,-90.7360,110.00,4.3
+H019,Hotel Regis (Quetzaltenango),14.8300,-91.5200,60.00,3.8
+H020,Hotel Casa del Parque (Antigua),14.5605,-90.7315,130.00,4.5
+H021,La Casa de Don David (Flores),16.9295,-89.8910,50.00,4.2
+H022,Hotel Maya Palace (Petén),17.2280,-89.6220,90.00,4.0
+H023,Hotel Casona de la Calle Real (Antigua),14.5590,-90.7325,145.00,4.7
+H024,Hotel Museo Casa de Botrán (Guatemala City),14.6050,-90.5200,115.00,4.3
+H025,Hilton Garden Inn Guatemala City,14.6120,-90.5100,105.00,4.2

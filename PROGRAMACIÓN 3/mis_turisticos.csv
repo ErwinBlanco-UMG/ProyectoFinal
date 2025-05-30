@@ -1,0 +1,26 @@
+id,name,latitude,longitude,price,average_rating,estimated_stay_hours
+T001,Tikal National Park,17.2222,-89.6238,20.00,4.9,8.0
+T002,Antigua Guatemala (Centro Histórico),14.5562,-90.7345,0.00,4.8,6.0
+T003,Lake Atitlán,14.7000,-91.2000,0.00,4.7,5.0
+T004,Pacaya Volcano,14.3817,-90.6015,10.00,4.5,4.0
+T005,Semuc Champey,15.5117,-89.9483,15.00,4.7,6.0
+T006,Metropolitan Cathedral,14.6300,-90.5120,0.00,4.4,1.5
+T007,La Aurora Zoo,14.5950,-90.5230,5.00,4.6,3.0
+T008,Paseo Cayalá,14.6280,-90.4780,0.00,4.5,3.0
+T009,Mercado Central (Guatemala City),14.6400,-90.5150,0.00,4.1,2.0
+T010,Palacio Nacional de la Cultura,14.6420,-90.5130,5.00,4.7,2.0
+T011,Museo Popol Vuh,14.6020,-90.5050,7.00,4.5,2.0
+T012,Arco de Santa Catalina (Antigua),14.5576,-90.7340,0.00,4.8,1.0
+T013,Cerro de La Cruz (Antigua),14.5640,-90.7280,0.00,4.6,1.0
+T014,Iglesia de La Merced (Antigua),14.5585,-90.7345,2.00,4.6,1.0
+T015,Chichicastenango Market,14.9390,-91.1040,0.00,4.5,5.0
+T016,Biotopo del Quetzal (Purulhá),15.2000,-90.1500,8.00,4.4,3.0
+T017,Iximché Archaeological Park,14.6540,-90.8740,5.00,4.3,3.0
+T018,Rio Dulce,15.6500,-88.9500,0.00,4.2,4.0
+T019,Torre del Reformador,14.6060,-90.5120,0.00,3.9,0.5
+T020,Museo Ixchel del Traje Indígena,14.6010,-90.5060,5.00,4.3,1.5
+T021,Mapa en Relieve de Guatemala,14.6360,-90.5140,2.00,4.0,1.0
+T022,Parque Nacional Naciones Unidas,14.5000,-90.5500,3.00,4.1,2.5
+T023,Museo Nacional de Arqueología y Etnología,14.5955,-90.5190,6.00,4.4,2.0
+T024,Finca Azotea (Coffee Farm, Antigua),14.5550,-90.7300,10.00,4.3,2.0
+T025,San Juan La Laguna (Lago Atitlán),14.7300,-91.2400,0.00,4.6,3.0
